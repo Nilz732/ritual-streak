@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 
 const TASK_TYPES = [
@@ -23,7 +23,7 @@ const LEADERBOARD_DATA = [
 
 const S = {
   body: {
-    margin: 0, padding: 0, boxSizing: "border-box",
+    margin: 0, padding: 0,
     background: "#08080f", minHeight: "100vh",
     fontFamily: "Georgia, serif", color: "#fff",
   },
@@ -40,28 +40,42 @@ const S = {
   },
   tabs: { display: "flex", padding: "16px 20px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" },
   tab: (active) => ({
-    background: "none", border: "none", borderBottom: active ? "2px solid #FF6B35" : "2px solid transparent",
-    color: active ? "#FF6B35" : "rgba(255,255,255,0.35)", fontSize: 13,
-    padding: "8px 16px 12px", cursor: "pointer", fontFamily: "Georgia, serif",
+    background: "none", border: "none",
+    borderBottom: active ? "2px solid #FF6B35" : "2px solid transparent",
+    color: active ? "#FF6B35" : "rgba(255,255,255,0.35)",
+    fontSize: 13, padding: "8px 16px 12px", cursor: "pointer", fontFamily: "Georgia, serif",
   }),
   content: { padding: 20, display: "flex", flexDirection: "column", gap: 16 },
   taskCard: (color) => ({
     background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-    border: `1px solid ${color}`, borderRadius: 20, padding: "32px 28px", textAlign: "center",
+    border: `1px solid ${color}`, borderRadius: 20, padding: "28px 24px", textAlign: "center",
   }),
   dayBadge: {
     display: "inline-block", background: "rgba(255,255,255,0.08)",
     borderRadius: 100, padding: "4px 12px", fontSize: 12,
     color: "rgba(255,255,255,0.5)", marginBottom: 16,
   },
-  taskEmoji: { fontSize: 56, marginBottom: 12 },
-  taskTitle: { fontSize: 26, fontWeight: "bold", color: "#fff", marginBottom: 8 },
-  taskDesc: { fontSize: 14, color: "rgba(255,255,255,0.45)", marginBottom: 24, lineHeight: 1.5 },
-  checkinBtn: (color) => ({
-    background: color, color: "#fff", border: "none", borderRadius: 12,
+  taskEmoji: { fontSize: 52, marginBottom: 10 },
+  taskTitle: { fontSize: 24, fontWeight: "bold", color: "#fff", marginBottom: 6, margin: "0 0 6px 0" },
+  taskDesc: { fontSize: 14, color: "rgba(255,255,255,0.45)", marginBottom: 20, lineHeight: 1.5, margin: "0 0 20px 0" },
+  uploadZone: (hasFile, color) => ({
+    border: `2px dashed ${hasFile ? color : "rgba(255,255,255,0.15)"}`,
+    borderRadius: 14, padding: "20px 16px", cursor: "pointer",
+    background: hasFile ? `${color}11` : "rgba(255,255,255,0.02)",
+    marginBottom: 14, transition: "all 0.2s",
+    display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+  }),
+  previewImg: {
+    width: "100%", maxHeight: 180, objectFit: "cover",
+    borderRadius: 10, marginBottom: 8,
+  },
+  checkinBtn: (color, disabled) => ({
+    background: disabled ? "rgba(255,255,255,0.1)" : color,
+    color: disabled ? "rgba(255,255,255,0.3)" : "#fff",
+    border: "none", borderRadius: 12,
     padding: "14px 32px", fontSize: 15, fontWeight: "bold",
-    cursor: "pointer", fontFamily: "Georgia, serif", width: "100%",
-    display: "block",
+    cursor: disabled ? "not-allowed" : "pointer",
+    fontFamily: "Georgia, serif", width: "100%", display: "block",
   }),
   doneBadge: {
     background: "rgba(46,204,113,0.1)", border: "1px solid rgba(46,204,113,0.3)",
@@ -72,11 +86,10 @@ const S = {
     borderRadius: 16, padding: 20,
   },
   sectionTitle: {
-    fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 16,
-    letterSpacing: "0.08em", textTransform: "uppercase",
+    fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 14,
+    letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 14px 0",
   },
-  streakDisplay: { display: "flex", alignItems: "center", gap: 16, marginBottom: 20 },
-  bigFlame: { fontSize: 36 },
+  streakDisplay: { display: "flex", alignItems: "center", gap: 16, marginBottom: 16 },
   streakNum: { fontSize: 48, fontWeight: "bold", lineHeight: 1, color: "#FF6B35", display: "block" },
   streakLabel: { fontSize: 13, color: "rgba(255,255,255,0.4)" },
   nextUp: {
@@ -84,13 +97,12 @@ const S = {
     background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
     borderRadius: 12, padding: "12px 16px", fontSize: 14,
   },
-  weekGrid: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6, marginTop: 12 },
+  weekGrid: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6, marginTop: 10 },
   weekItem: (active, color) => ({
     background: active ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
     border: `1px solid ${active ? color : "rgba(255,255,255,0.07)"}`,
     borderRadius: 10, padding: "8px 4px", textAlign: "center",
     display: "flex", flexDirection: "column", gap: 3,
-    boxShadow: active ? `0 0 12px ${color}33` : "none",
   }),
   lbRow: (rank) => ({
     display: "flex", alignItems: "center", gap: 14,
@@ -99,10 +111,14 @@ const S = {
     borderRadius: 14, padding: "14px 16px",
   }),
   historyItem: (color) => ({
-    display: "flex", alignItems: "center", gap: 12,
     background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
     borderLeft: `3px solid ${color}`, borderRadius: 12, padding: "12px 16px",
+    display: "flex", flexDirection: "column", gap: 8,
   }),
+  historyProof: {
+    width: "100%", maxHeight: 140, objectFit: "cover",
+    borderRadius: 8, marginTop: 4,
+  },
   loginContainer: {
     minHeight: "100vh", display: "flex", alignItems: "center",
     justifyContent: "center", padding: 20,
@@ -132,6 +148,9 @@ export default function Home() {
   const [tab, setTab] = useState("checkin");
   const [checkinHistory, setCheckinHistory] = useState([]);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [proofImage, setProofImage] = useState(null);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("ritual_user");
@@ -146,7 +165,10 @@ export default function Home() {
 
     const today = new Date().toDateString();
     if (savedChecked && lastDate === today) setCheckedToday(true);
-    else if (lastDate && lastDate !== today) localStorage.removeItem("ritual_checked_today");
+    else if (lastDate && lastDate !== today) {
+      localStorage.removeItem("ritual_checked_today");
+      setProofImage(null);
+    }
   }, []);
 
   const todayTask = TASK_TYPES[streak % 7];
@@ -158,12 +180,33 @@ export default function Home() {
     localStorage.setItem("ritual_user", inputName.trim());
   };
 
+  const handleFileChange = (file) => {
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setProofImage(e.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange(file);
+  };
+
   const handleCheckin = () => {
     if (checkedToday) return;
     const newStreak = streak + 1;
     const today = new Date().toDateString();
     const newHistory = [
-      { day: newStreak, task: todayTask.label, emoji: todayTask.emoji, date: today, color: todayTask.color },
+      {
+        day: newStreak,
+        task: todayTask.label,
+        emoji: todayTask.emoji,
+        date: today,
+        color: todayTask.color,
+        proof: proofImage || null,
+      },
       ...checkinHistory,
     ];
     setStreak(newStreak);
@@ -185,7 +228,7 @@ export default function Home() {
         <Head><title>Ritual Daily Builder 🔥</title></Head>
         <div style={S.loginCard}>
           <div style={{ fontSize: 64, marginBottom: 16 }}>🔥</div>
-          <h1 style={{ fontSize: 42, lineHeight: 1.1, marginBottom: 8 }}>
+          <h1 style={{ fontSize: 42, lineHeight: 1.1, marginBottom: 8, margin: "0 0 8px 0" }}>
             Ritual<br /><span style={{ color: "#FF6B35" }}>Daily Builder</span>
           </h1>
           <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, marginBottom: 40 }}>
@@ -220,12 +263,13 @@ export default function Home() {
       {showCelebration && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 999,
-          background: "rgba(0,0,0,0.85)", display: "flex",
+          background: "rgba(0,0,0,0.88)", display: "flex",
           alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12,
         }}>
-          <div style={{ fontSize: 64 }}>🔥</div>
-          <div style={{ fontSize: 32, fontWeight: "bold", color: "#FF6B35" }}>Day {streak} Complete!</div>
-          <div style={{ fontSize: 18, color: "rgba(255,255,255,0.6)" }}>Keep the flame alive 🔥</div>
+          <div style={{ fontSize: 72 }}>🔥</div>
+          <div style={{ fontSize: 30, fontWeight: "bold", color: "#FF6B35" }}>Day {streak} Complete!</div>
+          {proofImage && <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>Proof submitted ✅</div>}
+          <div style={{ fontSize: 16, color: "rgba(255,255,255,0.5)" }}>Keep the flame alive!</div>
         </div>
       )}
 
@@ -245,10 +289,10 @@ export default function Home() {
           ))}
         </div>
 
-        {/* CHECK IN */}
+        {/* CHECK IN TAB */}
         {tab === "checkin" && (
           <div style={S.content}>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", padding: "10px 0" }}>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", padding: "8px 0", margin: 0 }}>
               gm, <strong style={{ color: "#fff" }}>{username}</strong> 👋
             </p>
 
@@ -257,40 +301,83 @@ export default function Home() {
               <div style={S.taskEmoji}>{todayTask.emoji}</div>
               <h2 style={S.taskTitle}>Today: {todayTask.label}</h2>
               <p style={S.taskDesc}>{todayTask.desc}</p>
-              {checkedToday ? (
+
+              {!checkedToday && (
+                <>
+                  {/* UPLOAD ZONE */}
+                  <div
+                    style={S.uploadZone(!!proofImage, todayTask.color)}
+                    onClick={() => fileInputRef.current?.click()}
+                    onDrop={handleDrop}
+                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                  >
+                    {proofImage ? (
+                      <>
+                        <img src={proofImage} alt="proof" style={S.previewImg} />
+                        <span style={{ fontSize: 12, color: todayTask.color, fontWeight: "bold" }}>
+                          ✅ Screenshot uploaded! Click to change.
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ fontSize: 32 }}>📸</span>
+                        <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", fontWeight: "bold" }}>
+                          Upload Proof Screenshot
+                        </span>
+                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+                          Tap to upload · Optional but encouraged
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFileChange(e.target.files[0])}
+                  />
+
+                  <button style={S.checkinBtn(todayTask.color, false)} onClick={handleCheckin}>
+                    ✓ Mark Complete {proofImage ? "+ Submit Proof" : ""}
+                  </button>
+                </>
+              )}
+
+              {checkedToday && (
                 <div style={S.doneBadge}>✅ Checked in today! Come back tomorrow.</div>
-              ) : (
-                <button style={S.checkinBtn(todayTask.color)} onClick={handleCheckin}>
-                  ✓ Mark Complete
-                </button>
               )}
             </div>
 
+            {/* STREAK */}
             <div style={S.streakSection}>
               <div style={S.sectionTitle}>Your Streak</div>
               <div style={S.streakDisplay}>
-                <span style={S.bigFlame}>{renderFlame(streak)}</span>
+                <span style={{ fontSize: 36 }}>{renderFlame(streak)}</span>
                 <div>
                   <span style={S.streakNum}>{streak}</span>
                   <span style={S.streakLabel}>days strong</span>
                 </div>
               </div>
-              <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, marginBottom: 8, position: "relative" }}>
+              <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, marginBottom: 8 }}>
                 <div style={{ height: "100%", width: `${Math.min((streak / 30) * 100, 100)}%`, background: "#FF6B35", borderRadius: 2 }} />
               </div>
-              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 0 }}>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", margin: 0 }}>
                 {streak < 7 ? `${7 - streak} more days to unlock 🔥 flame`
                   : streak < 14 ? `${14 - streak} more days to unlock 🔥🔥`
-                  : streak < 30 ? `${30 - streak} more days to unlock 🔥🔥🔥 legendary`
+                  : streak < 30 ? `${30 - streak} more days to 🔥🔥🔥 legendary`
                   : "🏆 30 days! Absolute legend!"}
               </p>
             </div>
 
+            {/* NEXT UP */}
             <div style={S.nextUp}>
               <span style={{ color: "rgba(255,255,255,0.35)" }}>Next up:</span>
               <strong>{nextTask.emoji} {nextTask.label}</strong>
             </div>
 
+            {/* WEEKLY CYCLE */}
             <div>
               <div style={S.sectionTitle}>The Weekly Cycle</div>
               <div style={S.weekGrid}>
@@ -306,12 +393,12 @@ export default function Home() {
           </div>
         )}
 
-        {/* LEADERBOARD */}
+        {/* LEADERBOARD TAB */}
         {tab === "leaderboard" && (
           <div style={S.content}>
             <div style={{ textAlign: "center", padding: "8px 0" }}>
-              <h2 style={{ fontSize: 22, marginBottom: 4 }}>🏆 Top Ritual Contributors</h2>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>Most consistent builders this season</p>
+              <h2 style={{ fontSize: 22, margin: "0 0 4px 0" }}>🏆 Top Ritual Contributors</h2>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", margin: 0 }}>Most consistent builders this season</p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {LEADERBOARD_DATA.map((user) => (
@@ -333,29 +420,45 @@ export default function Home() {
               borderRadius: 14, padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center",
             }}>
               <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>Your streak:</span>
-              <strong style={{ color: "#FF6B35", fontSize: 18 }}>{streak} days</strong>
+              <strong style={{ color: "#FF6B35", fontSize: 18 }}>{streak} days 🔥</strong>
             </div>
           </div>
         )}
 
-        {/* HISTORY */}
+        {/* HISTORY TAB */}
         {tab === "history" && (
           <div style={S.content}>
-            <h2 style={{ fontSize: 20 }}>Your Journey</h2>
+            <h2 style={{ fontSize: 20, margin: 0 }}>Your Journey</h2>
             {checkinHistory.length === 0 ? (
               <div style={{ textAlign: "center", padding: "60px 20px", color: "rgba(255,255,255,0.3)" }}>
                 <div style={{ fontSize: 48 }}>📭</div>
                 <p style={{ marginTop: 12 }}>No check-ins yet. Start your streak today!</p>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {checkinHistory.map((item, i) => {
                   const taskInfo = TASK_TYPES.find((t) => t.label === item.task);
                   return (
                     <div key={i} style={S.historyItem(taskInfo?.color || "#FF6B35")}>
-                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", width: 45 }}>Day {item.day}</span>
-                      <span style={{ flex: 1, fontSize: 14 }}>{item.emoji} {item.task}</span>
-                      <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>{item.date}</span>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Day {item.day}</span>
+                          <span style={{ fontSize: 14 }}>{item.emoji} {item.task}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          {item.proof && (
+                            <span style={{
+                              fontSize: 10, color: taskInfo?.color || "#FF6B35",
+                              background: `${taskInfo?.color || "#FF6B35"}22`,
+                              borderRadius: 100, padding: "2px 8px", border: `1px solid ${taskInfo?.color || "#FF6B35"}44`
+                            }}>📸 proof</span>
+                          )}
+                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>{item.date}</span>
+                        </div>
+                      </div>
+                      {item.proof && (
+                        <img src={item.proof} alt="proof" style={S.historyProof} />
+                      )}
                     </div>
                   );
                 })}
