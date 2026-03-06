@@ -21,6 +21,109 @@ const LEADERBOARD_DATA = [
   { rank: 7, name: "DataViz", wallet: "0xv6w...x7y", streak: 15, points: 300, badge: "💎" },
 ];
 
+const S = {
+  body: {
+    margin: 0, padding: 0, boxSizing: "border-box",
+    background: "#08080f", minHeight: "100vh",
+    fontFamily: "Georgia, serif", color: "#fff",
+  },
+  app: { maxWidth: 520, margin: "0 auto", paddingBottom: 80 },
+  header: {
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    padding: "20px 20px 12px", borderBottom: "1px solid rgba(255,255,255,0.05)",
+    position: "sticky", top: 0, background: "rgba(8,8,15,0.97)", zIndex: 10,
+  },
+  logo: { fontSize: 20, fontWeight: "bold" },
+  streakPill: {
+    background: "rgba(255,107,53,0.15)", border: "1px solid rgba(255,107,53,0.3)",
+    borderRadius: 100, padding: "6px 14px", fontSize: 13, color: "#FF6B35",
+  },
+  tabs: { display: "flex", padding: "16px 20px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" },
+  tab: (active) => ({
+    background: "none", border: "none", borderBottom: active ? "2px solid #FF6B35" : "2px solid transparent",
+    color: active ? "#FF6B35" : "rgba(255,255,255,0.35)", fontSize: 13,
+    padding: "8px 16px 12px", cursor: "pointer", fontFamily: "Georgia, serif",
+  }),
+  content: { padding: 20, display: "flex", flexDirection: "column", gap: 16 },
+  taskCard: (color) => ({
+    background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
+    border: `1px solid ${color}`, borderRadius: 20, padding: "32px 28px", textAlign: "center",
+  }),
+  dayBadge: {
+    display: "inline-block", background: "rgba(255,255,255,0.08)",
+    borderRadius: 100, padding: "4px 12px", fontSize: 12,
+    color: "rgba(255,255,255,0.5)", marginBottom: 16,
+  },
+  taskEmoji: { fontSize: 56, marginBottom: 12 },
+  taskTitle: { fontSize: 26, fontWeight: "bold", color: "#fff", marginBottom: 8 },
+  taskDesc: { fontSize: 14, color: "rgba(255,255,255,0.45)", marginBottom: 24, lineHeight: 1.5 },
+  checkinBtn: (color) => ({
+    background: color, color: "#fff", border: "none", borderRadius: 12,
+    padding: "14px 32px", fontSize: 15, fontWeight: "bold",
+    cursor: "pointer", fontFamily: "Georgia, serif", width: "100%",
+    display: "block",
+  }),
+  doneBadge: {
+    background: "rgba(46,204,113,0.1)", border: "1px solid rgba(46,204,113,0.3)",
+    color: "#2ECC71", borderRadius: 12, padding: "14px 24px", fontSize: 14,
+  },
+  streakSection: {
+    background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: 16, padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 16,
+    letterSpacing: "0.08em", textTransform: "uppercase",
+  },
+  streakDisplay: { display: "flex", alignItems: "center", gap: 16, marginBottom: 20 },
+  bigFlame: { fontSize: 36 },
+  streakNum: { fontSize: 48, fontWeight: "bold", lineHeight: 1, color: "#FF6B35", display: "block" },
+  streakLabel: { fontSize: 13, color: "rgba(255,255,255,0.4)" },
+  nextUp: {
+    display: "flex", alignItems: "center", gap: 10,
+    background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: 12, padding: "12px 16px", fontSize: 14,
+  },
+  weekGrid: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6, marginTop: 12 },
+  weekItem: (active, color) => ({
+    background: active ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+    border: `1px solid ${active ? color : "rgba(255,255,255,0.07)"}`,
+    borderRadius: 10, padding: "8px 4px", textAlign: "center",
+    display: "flex", flexDirection: "column", gap: 3,
+    boxShadow: active ? `0 0 12px ${color}33` : "none",
+  }),
+  lbRow: (rank) => ({
+    display: "flex", alignItems: "center", gap: 14,
+    background: rank === 1 ? "rgba(255,215,0,0.04)" : "rgba(255,255,255,0.02)",
+    border: `1px solid ${rank === 1 ? "rgba(255,215,0,0.25)" : rank === 2 ? "rgba(192,192,192,0.2)" : rank === 3 ? "rgba(205,127,50,0.2)" : "rgba(255,255,255,0.06)"}`,
+    borderRadius: 14, padding: "14px 16px",
+  }),
+  historyItem: (color) => ({
+    display: "flex", alignItems: "center", gap: 12,
+    background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+    borderLeft: `3px solid ${color}`, borderRadius: 12, padding: "12px 16px",
+  }),
+  loginContainer: {
+    minHeight: "100vh", display: "flex", alignItems: "center",
+    justifyContent: "center", padding: 20,
+    background: "#0a0a0f", fontFamily: "Georgia, serif",
+  },
+  loginCard: {
+    background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,107,53,0.2)",
+    borderRadius: 24, padding: "48px 40px", textAlign: "center", width: "100%", maxWidth: 440,
+  },
+  input: {
+    background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,107,53,0.3)",
+    borderRadius: 12, padding: "16px 20px", color: "#fff", fontSize: 16,
+    outline: "none", width: "100%", fontFamily: "Georgia, serif", boxSizing: "border-box",
+  },
+  startBtn: {
+    background: "#FF6B35", color: "#fff", border: "none", borderRadius: 12,
+    padding: 16, fontSize: 16, fontWeight: "bold", cursor: "pointer",
+    width: "100%", fontFamily: "Georgia, serif",
+  },
+};
+
 export default function Home() {
   const [username, setUsername] = useState("");
   const [inputName, setInputName] = useState("");
@@ -29,25 +132,21 @@ export default function Home() {
   const [tab, setTab] = useState("checkin");
   const [checkinHistory, setCheckinHistory] = useState([]);
   const [showCelebration, setShowCelebration] = useState(false);
-  const [particles, setParticles] = useState([]);
 
   useEffect(() => {
     const saved = localStorage.getItem("ritual_user");
     const savedStreak = localStorage.getItem("ritual_streak");
-    const savedChecked = localStorage.getItem("ritual_checked_today");
     const savedHistory = localStorage.getItem("ritual_history");
     const lastDate = localStorage.getItem("ritual_last_date");
+    const savedChecked = localStorage.getItem("ritual_checked_today");
 
     if (saved) setUsername(saved);
     if (savedStreak) setStreak(parseInt(savedStreak));
     if (savedHistory) setCheckinHistory(JSON.parse(savedHistory));
 
     const today = new Date().toDateString();
-    if (savedChecked && lastDate === today) {
-      setCheckedToday(true);
-    } else if (lastDate && lastDate !== today) {
-      localStorage.removeItem("ritual_checked_today");
-    }
+    if (savedChecked && lastDate === today) setCheckedToday(true);
+    else if (lastDate && lastDate !== today) localStorage.removeItem("ritual_checked_today");
   }, []);
 
   const todayTask = TASK_TYPES[streak % 7];
@@ -64,7 +163,7 @@ export default function Home() {
     const newStreak = streak + 1;
     const today = new Date().toDateString();
     const newHistory = [
-      { day: newStreak, task: todayTask.label, emoji: todayTask.emoji, date: today },
+      { day: newStreak, task: todayTask.label, emoji: todayTask.emoji, date: today, color: todayTask.color },
       ...checkinHistory,
     ];
     setStreak(newStreak);
@@ -74,211 +173,132 @@ export default function Home() {
     localStorage.setItem("ritual_checked_today", "true");
     localStorage.setItem("ritual_last_date", today);
     localStorage.setItem("ritual_history", JSON.stringify(newHistory));
-    const newParticles = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      delay: Math.random() * 0.5,
-      emoji: ["🔥", "⚡", "✨", "💎", "🎯"][Math.floor(Math.random() * 5)],
-    }));
-    setParticles(newParticles);
     setShowCelebration(true);
-    setTimeout(() => setShowCelebration(false), 3000);
+    setTimeout(() => setShowCelebration(false), 2500);
   };
 
-  const renderFlame = (streakCount) => {
-    if (streakCount >= 30) return "🔥🔥🔥";
-    if (streakCount >= 14) return "🔥🔥";
-    if (streakCount >= 7) return "🔥";
-    return "🕯️";
-  };
+  const renderFlame = (n) => n >= 30 ? "🔥🔥🔥" : n >= 14 ? "🔥🔥" : n >= 7 ? "🔥" : "🕯️";
 
   if (!username) {
     return (
-      <>
-        <Head>
-          <title>Ritual Daily Builder 🔥</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </Head>
-        <div className="container">
-          <div className="login-card">
-            <div className="logo-area">
-              <div className="flame-icon">🔥</div>
-              <h1>Ritual<br /><span>Daily Builder</span></h1>
-              <p className="tagline">Build your streak. Earn your flame.</p>
-            </div>
-            <div className="input-group">
-              <input
-                type="text"
-                placeholder="Enter your Ritual username"
-                value={inputName}
-                onChange={(e) => setInputName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleStart()}
-                className="name-input"
-              />
-              <button className="start-btn" onClick={handleStart}>
-                Start My Streak →
-              </button>
-            </div>
-            <p className="disclaimer">No wallet needed · Pure vibes · Daily grind</p>
+      <div style={S.loginContainer}>
+        <Head><title>Ritual Daily Builder 🔥</title></Head>
+        <div style={S.loginCard}>
+          <div style={{ fontSize: 64, marginBottom: 16 }}>🔥</div>
+          <h1 style={{ fontSize: 42, lineHeight: 1.1, marginBottom: 8 }}>
+            Ritual<br /><span style={{ color: "#FF6B35" }}>Daily Builder</span>
+          </h1>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, marginBottom: 40 }}>
+            Build your streak. Earn your flame.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <input
+              style={S.input}
+              type="text"
+              placeholder="Enter your Ritual username"
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleStart()}
+            />
+            <button style={S.startBtn} onClick={handleStart}>
+              Start My Streak →
+            </button>
           </div>
+          <p style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, marginTop: 24 }}>
+            No wallet needed · Pure vibes · Daily grind
+          </p>
         </div>
-        <style jsx global>{`
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body {
-            background: #0a0a0f;
-            min-height: 100vh;
-            font-family: 'Georgia', serif;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: radial-gradient(ellipse at 20% 50%, rgba(255,107,53,0.08) 0%, transparent 60%),
-                              radial-gradient(ellipse at 80% 20%, rgba(155,89,182,0.06) 0%, transparent 50%);
-          }
-        `}</style>
-        <style jsx>{`
-          .container { padding: 20px; width: 100%; max-width: 480px; }
-          .login-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,107,53,0.2);
-            border-radius: 24px;
-            padding: 48px 40px;
-            text-align: center;
-            backdrop-filter: blur(20px);
-          }
-          .flame-icon { font-size: 64px; margin-bottom: 16px; animation: pulse 2s ease-in-out infinite; }
-          @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-          h1 { font-size: 42px; line-height: 1.1; color: #fff; margin-bottom: 8px; }
-          h1 span { color: #FF6B35; }
-          .tagline { color: rgba(255,255,255,0.4); font-size: 14px; margin-bottom: 40px; letter-spacing: 0.05em; }
-          .input-group { display: flex; flex-direction: column; gap: 12px; }
-          .name-input {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,107,53,0.3);
-            border-radius: 12px;
-            padding: 16px 20px;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-          }
-          .name-input:focus { border-color: #FF6B35; }
-          .name-input::placeholder { color: rgba(255,255,255,0.3); }
-          .start-btn {
-            background: #FF6B35;
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            letter-spacing: 0.05em;
-            transition: all 0.2s;
-          }
-          .start-btn:hover { background: #ff8a60; transform: translateY(-1px); }
-          .disclaimer { color: rgba(255,255,255,0.2); font-size: 12px; margin-top: 24px; }
-        `}</style>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <Head>
-        <title>Ritual Daily Builder 🔥</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
+    <div style={S.body}>
+      <Head><title>Ritual Daily Builder 🔥</title></Head>
 
+      {/* CELEBRATION */}
       {showCelebration && (
-        <div className="celebration">
-          {particles.map((p) => (
-            <div key={p.id} className="particle" style={{ left: `${p.x}%`, animationDelay: `${p.delay}s` }}>
-              {p.emoji}
-            </div>
-          ))}
-          <div className="celebration-text">
-            <span>Day {streak} Complete!</span>
-            <span className="sub">Keep the flame alive 🔥</span>
-          </div>
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 999,
+          background: "rgba(0,0,0,0.85)", display: "flex",
+          alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12,
+        }}>
+          <div style={{ fontSize: 64 }}>🔥</div>
+          <div style={{ fontSize: 32, fontWeight: "bold", color: "#FF6B35" }}>Day {streak} Complete!</div>
+          <div style={{ fontSize: 18, color: "rgba(255,255,255,0.6)" }}>Keep the flame alive 🔥</div>
         </div>
       )}
 
-      <div className="app">
-        <header>
-          <div className="header-left">
-            <span className="logo">🔥 Ritual</span>
-          </div>
-          <div className="header-right">
-            <div className="streak-pill">
-              {renderFlame(streak)} <strong>{streak}</strong> day streak
-            </div>
-          </div>
-        </header>
-
-        <div className="tabs">
-          <button className={tab === "checkin" ? "tab active" : "tab"} onClick={() => setTab("checkin")}>Daily Check-in</button>
-          <button className={tab === "leaderboard" ? "tab active" : "tab"} onClick={() => setTab("leaderboard")}>Leaderboard</button>
-          <button className={tab === "history" ? "tab active" : "tab"} onClick={() => setTab("history")}>My History</button>
+      <div style={S.app}>
+        {/* HEADER */}
+        <div style={S.header}>
+          <span style={S.logo}>🔥 Ritual</span>
+          <span style={S.streakPill}>{renderFlame(streak)} <strong>{streak}</strong> day streak</span>
         </div>
 
+        {/* TABS */}
+        <div style={S.tabs}>
+          {["checkin", "leaderboard", "history"].map((t) => (
+            <button key={t} style={S.tab(tab === t)} onClick={() => setTab(t)}>
+              {t === "checkin" ? "Daily Check-in" : t === "leaderboard" ? "Leaderboard" : "My History"}
+            </button>
+          ))}
+        </div>
+
+        {/* CHECK IN */}
         {tab === "checkin" && (
-          <div className="content">
-            <div className="welcome-bar">
-              <span>gm, <strong>{username}</strong> 👋</span>
-            </div>
-            <div className="task-card" style={{ "--task-color": todayTask.color }}>
-              <div className="task-day-badge">Day {streak + 1}</div>
-              <div className="task-emoji">{todayTask.emoji}</div>
-              <h2 className="task-title">Today: {todayTask.label}</h2>
-              <p className="task-desc">{todayTask.desc}</p>
+          <div style={S.content}>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", padding: "10px 0" }}>
+              gm, <strong style={{ color: "#fff" }}>{username}</strong> 👋
+            </p>
+
+            <div style={S.taskCard(todayTask.color)}>
+              <div style={S.dayBadge}>Day {streak + 1}</div>
+              <div style={S.taskEmoji}>{todayTask.emoji}</div>
+              <h2 style={S.taskTitle}>Today: {todayTask.label}</h2>
+              <p style={S.taskDesc}>{todayTask.desc}</p>
               {checkedToday ? (
-                <div className="done-badge">✅ Checked in today! Come back tomorrow.</div>
+                <div style={S.doneBadge}>✅ Checked in today! Come back tomorrow.</div>
               ) : (
-                <button className="checkin-btn" onClick={handleCheckin}>✓ Mark Complete</button>
+                <button style={S.checkinBtn(todayTask.color)} onClick={handleCheckin}>
+                  ✓ Mark Complete
+                </button>
               )}
             </div>
 
-            <div className="streak-section">
-              <h3>Your Streak</h3>
-              <div className="streak-display">
-                <span className="big-flame">{renderFlame(streak)}</span>
-                <div className="streak-info">
-                  <span className="streak-num">{streak}</span>
-                  <span className="streak-label">days strong</span>
+            <div style={S.streakSection}>
+              <div style={S.sectionTitle}>Your Streak</div>
+              <div style={S.streakDisplay}>
+                <span style={S.bigFlame}>{renderFlame(streak)}</span>
+                <div>
+                  <span style={S.streakNum}>{streak}</span>
+                  <span style={S.streakLabel}>days strong</span>
                 </div>
               </div>
-              <div className="milestone-bar">
-                <div className="milestone-fill" style={{ width: `${Math.min((streak / 30) * 100, 100)}%` }} />
-                <div className="milestones">
-                  {[7, 14, 21, 30].map((m) => (
-                    <div key={m} className={`milestone-dot ${streak >= m ? "reached" : ""}`} style={{ left: `${(m / 30) * 100}%` }}>
-                      <span>{m}d</span>
-                    </div>
-                  ))}
-                </div>
+              <div style={{ height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, marginBottom: 8, position: "relative" }}>
+                <div style={{ height: "100%", width: `${Math.min((streak / 30) * 100, 100)}%`, background: "#FF6B35", borderRadius: 2 }} />
               </div>
-              <p className="milestone-hint">
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 0 }}>
                 {streak < 7 ? `${7 - streak} more days to unlock 🔥 flame`
-                  : streak < 14 ? `${14 - streak} more days to unlock 🔥🔥 double flame`
-                  : streak < 30 ? `${30 - streak} more days to unlock 🔥🔥🔥 legendary flame`
-                  : "🏆 You've hit 30 days! Absolute legend!"}
+                  : streak < 14 ? `${14 - streak} more days to unlock 🔥🔥`
+                  : streak < 30 ? `${30 - streak} more days to unlock 🔥🔥🔥 legendary`
+                  : "🏆 30 days! Absolute legend!"}
               </p>
             </div>
 
-            <div className="next-up">
-              <span className="next-label">Next up:</span>
-              <span className="next-task">{nextTask.emoji} {nextTask.label}</span>
+            <div style={S.nextUp}>
+              <span style={{ color: "rgba(255,255,255,0.35)" }}>Next up:</span>
+              <strong>{nextTask.emoji} {nextTask.label}</strong>
             </div>
 
-            <div className="weekly">
-              <h3>The Weekly Cycle</h3>
-              <div className="week-grid">
+            <div>
+              <div style={S.sectionTitle}>The Weekly Cycle</div>
+              <div style={S.weekGrid}>
                 {TASK_TYPES.map((t) => (
-                  <div key={t.day} className={`week-item ${(streak % 7) + 1 === t.day ? "current" : ""}`} style={{ "--c": t.color }}>
-                    <span className="week-emoji">{t.emoji}</span>
-                    <span className="week-label">{t.label}</span>
-                    <span className="week-day">Day {t.day}</span>
+                  <div key={t.day} style={S.weekItem((streak % 7) + 1 === t.day, t.color)}>
+                    <span style={{ fontSize: 16 }}>{t.emoji}</span>
+                    <span style={{ fontSize: 8, color: "rgba(255,255,255,0.4)" }}>{t.label}</span>
+                    <span style={{ fontSize: 8, color: "rgba(255,255,255,0.2)" }}>Day {t.day}</span>
                   </div>
                 ))}
               </div>
@@ -286,53 +306,56 @@ export default function Home() {
           </div>
         )}
 
+        {/* LEADERBOARD */}
         {tab === "leaderboard" && (
-          <div className="content">
-            <div className="lb-header">
-              <h2>🏆 Top Ritual Contributors</h2>
-              <p>Most consistent builders this season</p>
+          <div style={S.content}>
+            <div style={{ textAlign: "center", padding: "8px 0" }}>
+              <h2 style={{ fontSize: 22, marginBottom: 4 }}>🏆 Top Ritual Contributors</h2>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>Most consistent builders this season</p>
             </div>
-            <div className="leaderboard">
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {LEADERBOARD_DATA.map((user) => (
-                <div key={user.rank} className={`lb-row rank-${user.rank}`}>
-                  <div className="lb-rank">{user.badge}</div>
-                  <div className="lb-info">
-                    <span className="lb-name">{user.name}</span>
-                    <span className="lb-wallet">{user.wallet}</span>
+                <div key={user.rank} style={S.lbRow(user.rank)}>
+                  <span style={{ fontSize: 22, width: 30, textAlign: "center" }}>{user.badge}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 15, fontWeight: "bold" }}>{user.name}</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontFamily: "monospace" }}>{user.wallet}</div>
                   </div>
-                  <div className="lb-stats">
-                    <span className="lb-streak">🔥 {user.streak} days</span>
-                    <span className="lb-points">{user.points} pts</span>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 13, color: "#FF6B35" }}>🔥 {user.streak} days</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{user.points} pts</div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="your-rank">
-              <span>Your current streak:</span>
-              <strong>{streak} days</strong>
-              <span className="rank-hint">Keep going to climb the board!</span>
+            <div style={{
+              background: "rgba(255,107,53,0.08)", border: "1px solid rgba(255,107,53,0.2)",
+              borderRadius: 14, padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center",
+            }}>
+              <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>Your streak:</span>
+              <strong style={{ color: "#FF6B35", fontSize: 18 }}>{streak} days</strong>
             </div>
           </div>
         )}
 
+        {/* HISTORY */}
         {tab === "history" && (
-          <div className="content">
-            <h2 className="history-title">Your Journey</h2>
+          <div style={S.content}>
+            <h2 style={{ fontSize: 20 }}>Your Journey</h2>
             {checkinHistory.length === 0 ? (
-              <div className="empty-state">
-                <span>📭</span>
-                <p>No check-ins yet.</p>
-                <p>Start your streak today!</p>
+              <div style={{ textAlign: "center", padding: "60px 20px", color: "rgba(255,255,255,0.3)" }}>
+                <div style={{ fontSize: 48 }}>📭</div>
+                <p style={{ marginTop: 12 }}>No check-ins yet. Start your streak today!</p>
               </div>
             ) : (
-              <div className="history-list">
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {checkinHistory.map((item, i) => {
                   const taskInfo = TASK_TYPES.find((t) => t.label === item.task);
                   return (
-                    <div key={i} className="history-item" style={{ "--hc": taskInfo?.color || "#FF6B35" }}>
-                      <div className="history-day">Day {item.day}</div>
-                      <div className="history-task"><span>{item.emoji}</span><span>{item.task}</span></div>
-                      <div className="history-date">{item.date}</div>
+                    <div key={i} style={S.historyItem(taskInfo?.color || "#FF6B35")}>
+                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", width: 45 }}>Day {item.day}</span>
+                      <span style={{ flex: 1, fontSize: 14 }}>{item.emoji} {item.task}</span>
+                      <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>{item.date}</span>
                     </div>
                   );
                 })}
@@ -341,176 +364,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      <style jsx global>{`
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          background: #08080f;
-          min-height: 100vh;
-          font-family: 'Georgia', serif;
-          color: #fff;
-          background-image:
-            radial-gradient(ellipse at 10% 0%, rgba(255,107,53,0.12) 0%, transparent 50%),
-            radial-gradient(ellipse at 90% 100%, rgba(155,89,182,0.08) 0%, transparent 50%);
-        }
-      `}</style>
-
-      <style jsx>{`
-        .app { max-width: 520px; margin: 0 auto; padding: 0 0 80px 0; }
-        .celebration {
-          position: fixed; inset: 0; z-index: 999;
-          background: rgba(0,0,0,0.85);
-          display: flex; align-items: center; justify-content: center;
-          pointer-events: none;
-          animation: fadeOut 3s forwards;
-        }
-        @keyframes fadeOut { 0%,60%{opacity:1} 100%{opacity:0} }
-        .particle { position: absolute; top: -20px; font-size: 24px; animation: fall 2s ease-in forwards; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
-        .celebration-text { display: flex; flex-direction: column; align-items: center; gap: 8px; animation: popIn 0.4s ease-out; }
-        @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-        .celebration-text span { font-size: 36px; font-weight: bold; color: #FF6B35; }
-        .celebration-text .sub { font-size: 18px; color: rgba(255,255,255,0.7); }
-        header {
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 20px 20px 12px;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-          position: sticky; top: 0;
-          background: rgba(8,8,15,0.95);
-          backdrop-filter: blur(20px);
-          z-index: 10;
-        }
-        .logo { font-size: 20px; font-weight: bold; }
-        .streak-pill {
-          background: rgba(255,107,53,0.15);
-          border: 1px solid rgba(255,107,53,0.3);
-          border-radius: 100px;
-          padding: 6px 14px;
-          font-size: 13px;
-          color: #FF6B35;
-        }
-        .tabs { display: flex; padding: 16px 20px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
-        .tab {
-          background: none; border: none; color: rgba(255,255,255,0.35);
-          font-size: 13px; padding: 8px 16px 12px;
-          cursor: pointer; border-bottom: 2px solid transparent;
-          transition: all 0.2s; font-family: inherit;
-        }
-        .tab.active { color: #FF6B35; border-bottom-color: #FF6B35; }
-        .content { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-        .welcome-bar { font-size: 14px; color: rgba(255,255,255,0.5); padding: 10px 0; }
-        .welcome-bar strong { color: #fff; }
-        .task-card {
-          background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-          border: 1px solid var(--task-color, #FF6B35);
-          border-radius: 20px; padding: 32px 28px; text-align: center;
-          position: relative; overflow: hidden;
-        }
-        .task-card::before {
-          content: ''; position: absolute; inset: 0;
-          background: radial-gradient(circle at 50% 0%, var(--task-color, #FF6B35) 0%, transparent 60%);
-          opacity: 0.08;
-        }
-        .task-day-badge {
-          display: inline-block; background: rgba(255,255,255,0.08);
-          border-radius: 100px; padding: 4px 12px; font-size: 12px;
-          color: rgba(255,255,255,0.5); margin-bottom: 16px;
-        }
-        .task-emoji { font-size: 56px; margin-bottom: 12px; }
-        .task-title { font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 8px; }
-        .task-desc { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 24px; line-height: 1.5; }
-        .checkin-btn {
-          background: var(--task-color, #FF6B35); color: #fff; border: none;
-          border-radius: 12px; padding: 14px 32px; font-size: 15px; font-weight: bold;
-          cursor: pointer; font-family: inherit; transition: all 0.2s; width: 100%;
-        }
-        .checkin-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-        .done-badge {
-          background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3);
-          color: #2ECC71; border-radius: 12px; padding: 14px 24px; font-size: 14px;
-        }
-        .streak-section {
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 16px; padding: 20px;
-        }
-        .streak-section h3 { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.08em; }
-        .streak-display { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-        .big-flame { font-size: 36px; }
-        .streak-num { font-size: 48px; font-weight: bold; line-height: 1; color: #FF6B35; display: block; }
-        .streak-label { font-size: 13px; color: rgba(255,255,255,0.4); }
-        .milestone-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; position: relative; margin-bottom: 24px; }
-        .milestone-fill { height: 100%; background: #FF6B35; border-radius: 2px; transition: width 0.5s ease; }
-        .milestones { position: absolute; inset: 0; }
-        .milestone-dot {
-          position: absolute; top: 50%; transform: translate(-50%, -50%);
-          width: 10px; height: 10px; background: rgba(255,255,255,0.15);
-          border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
-        }
-        .milestone-dot.reached { background: #FF6B35; border-color: #FF6B35; }
-        .milestone-dot span { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); font-size: 10px; color: rgba(255,255,255,0.3); white-space: nowrap; }
-        .milestone-hint { font-size: 12px; color: rgba(255,255,255,0.35); }
-        .next-up {
-          display: flex; align-items: center; gap: 10px;
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 12px; padding: 12px 16px; font-size: 14px;
-        }
-        .next-label { color: rgba(255,255,255,0.35); }
-        .next-task { color: #fff; font-weight: bold; }
-        .weekly h3 { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
-        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-        .week-item {
-          background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 10px; padding: 8px 4px; text-align: center;
-          display: flex; flex-direction: column; gap: 3px;
-        }
-        .week-item.current { border-color: var(--c, #FF6B35); background: rgba(255,255,255,0.06); box-shadow: 0 0 12px rgba(255,107,53,0.15); }
-        .week-emoji { font-size: 16px; }
-        .week-label { font-size: 8px; color: rgba(255,255,255,0.4); }
-        .week-day { font-size: 8px; color: rgba(255,255,255,0.2); }
-        .lb-header { text-align: center; padding: 8px 0 4px; }
-        .lb-header h2 { font-size: 22px; margin-bottom: 4px; }
-        .lb-header p { font-size: 13px; color: rgba(255,255,255,0.35); }
-        .leaderboard { display: flex; flex-direction: column; gap: 8px; }
-        .lb-row {
-          display: flex; align-items: center; gap: 14px;
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 14px; padding: 14px 16px;
-        }
-        .lb-row.rank-1 { border-color: rgba(255,215,0,0.25); background: rgba(255,215,0,0.04); }
-        .lb-row.rank-2 { border-color: rgba(192,192,192,0.2); }
-        .lb-row.rank-3 { border-color: rgba(205,127,50,0.2); }
-        .lb-rank { font-size: 22px; width: 30px; text-align: center; }
-        .lb-info { flex: 1; }
-        .lb-name { display: block; font-size: 15px; font-weight: bold; margin-bottom: 2px; }
-        .lb-wallet { font-size: 11px; color: rgba(255,255,255,0.3); font-family: monospace; }
-        .lb-stats { text-align: right; }
-        .lb-streak { display: block; font-size: 13px; color: #FF6B35; margin-bottom: 2px; }
-        .lb-points { font-size: 11px; color: rgba(255,255,255,0.4); }
-        .your-rank {
-          background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.2);
-          border-radius: 14px; padding: 16px;
-          display: flex; align-items: center; justify-content: space-between;
-          flex-wrap: wrap; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.5);
-        }
-        .your-rank strong { color: #FF6B35; font-size: 18px; }
-        .rank-hint { font-size: 12px; color: rgba(255,255,255,0.3); width: 100%; }
-        .history-title { font-size: 20px; padding: 4px 0; }
-        .empty-state {
-          text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.3);
-          display: flex; flex-direction: column; align-items: center; gap: 8px;
-        }
-        .empty-state span { font-size: 48px; }
-        .history-list { display: flex; flex-direction: column; gap: 8px; }
-        .history-item {
-          display: flex; align-items: center; gap: 12px;
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-          border-left: 3px solid var(--hc, #FF6B35);
-          border-radius: 12px; padding: 12px 16px;
-        }
-        .history-day { font-size: 12px; color: rgba(255,255,255,0.3); width: 45px; }
-        .history-task { flex: 1; display: flex; align-items: center; gap: 8px; font-size: 14px; }
-        .history-date { font-size: 11px; color: rgba(255,255,255,0.25); }
-      `}</style>
-    </>
+    </div>
   );
 }
